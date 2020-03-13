@@ -65,21 +65,20 @@ public class Main {
     }
 
     public static void DFS(String porzadekPrzechodzenia, List<Punkt> ukladPoczatkowy, List<Punkt> ukladDocelowy, Punkt punktZero, int wiersze, int kolumny) {
-
-
+        String porzadek;
         while (!porownajUklady(ukladPoczatkowy,ukladDocelowy)) {
+            porzadek = porzadekPrzechodzenia;
             if (punktZero.getX() == 0) {
-                porzadekPrzechodzenia = porzadekPrzechodzenia.replace("L", "");
+                porzadek = porzadek.replace("L", "");
             } else if (punktZero.getX() == kolumny - 1) {
-                porzadekPrzechodzenia = porzadekPrzechodzenia.replace("R", "");
+                porzadek = porzadek.replace("R", "");
             }
             if (punktZero.getY() == 0) {
-                porzadekPrzechodzenia = porzadekPrzechodzenia.replace("U", "");
+                porzadek = porzadek.replace("U", "");
             } else if (punktZero.getY() == wiersze - 1) {
-                porzadekPrzechodzenia = porzadekPrzechodzenia.replace("D", "");
+                porzadek = porzadek.replace("D", "");
             }
-            System.out.println(porzadekPrzechodzenia.charAt(0));
-            wykonajRuch(porzadekPrzechodzenia.charAt(0),ukladPoczatkowy);
+            wykonajRuch(porzadek.charAt(0),ukladPoczatkowy);
         }
     }
     public static void wykonajRuch(char kierunek, List<Punkt> obecnyUklad)
