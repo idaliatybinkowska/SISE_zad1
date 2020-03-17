@@ -1,7 +1,13 @@
-public class Punkt {
+public class Punkt implements Comparable<Punkt> {
     private int wartosc;
     private int x;
     private int y;
+
+    public Punkt(Punkt p){
+        this.wartosc=p.wartosc;
+        this.x=p.x;
+        this.y=p.y;
+    }
 
     public Punkt() {
     }
@@ -36,5 +42,21 @@ public class Punkt {
         this.wartosc = wartosc;
     }
 
+    public int compareTo(Punkt o) {
 
+        if (this.getWartosc() == o.getWartosc() && this.getX() == o.getX() && this.getY() == o.getY()) {
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Punkt{" +
+                "wartosc=" + wartosc +
+                ", x=" + x +
+                ", y=" + y +
+                '}';
+    }
 }
