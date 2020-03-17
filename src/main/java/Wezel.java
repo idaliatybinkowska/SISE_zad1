@@ -7,6 +7,7 @@ public class Wezel {
     private List<Wezel> dzieci = new ArrayList<Wezel>();
     private Wezel rodzic;
     private char kierunek;
+    private int poziomWDrzewie;
 
     public Uklad getUklad() {
         return uklad;
@@ -40,6 +41,14 @@ public class Wezel {
         this.kierunek = kierunek;
     }
 
+    public int getPoziomWDrzewie() {
+        return poziomWDrzewie;
+    }
+
+    public void setPoziomWDrzewie(int poziomWDrzewie) {
+        this.poziomWDrzewie = poziomWDrzewie;
+    }
+
     public void stworzDzieci(String porzadekPrzechodzenia, char poprzedniRuch, Queue<Wezel> kolejka) {
         Punkt punktZero = this.uklad.getPunktByWartosc(0);
         String porzadek = porzadekPrzechodzenia;
@@ -60,6 +69,7 @@ public class Wezel {
         while (!porzadek.equals("")) {
             Wezel dziecko = new Wezel();
             dziecko.rodzic = this;
+            dziecko.setPoziomWDrzewie(this.poziomWDrzewie+1);
             dziecko.setUklad(new Uklad(this.getUklad()));
             this.dzieci.add(dziecko);
             if (porzadek.charAt(0) == 'L') {

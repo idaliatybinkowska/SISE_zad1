@@ -7,6 +7,7 @@ public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
         Wezel korzen = new Wezel();
+        korzen.setPoziomWDrzewie(0);
         korzen.setUklad(new Uklad(zczytaniePliku("uklad_poczatkowy.txt")));
         Uklad rozwiazanie = new Uklad(zczytaniePliku("rozwiazanie.txt"));
 //        korzen.stworzDzieci("LURD");
@@ -48,7 +49,6 @@ public class Main {
         Wezel obecnyWezel = new Wezel();
         if(korzen.getUklad().compareTo(ukladDocelowy)!=0)
         {
-
             obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
             Queue <Wezel> kolejka = new LinkedList<Wezel>();
             char poprzedniRuch = ' ' ;
@@ -59,6 +59,8 @@ public class Main {
                 poprzedniRuch = obecnyWezel.getKierunek();
             }while(obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && kolejka.size()!=0);
         }
+        System.out.println("glebokosc rekursji "+obecnyWezel.getPoziomWDrzewie());
+
         String sciezka ="";
         while(obecnyWezel != null) {
             sciezka = obecnyWezel.getKierunek() + sciezka;
