@@ -11,7 +11,7 @@ public class Main {
         Uklad rozwiazanie = new Uklad(zczytaniePliku("rozwiazanie.txt"));
 
 
-        if (sprawdzenieCzyMoznaRozwiazac(wartosciUkladu(korzen))) {
+        if (sprawdzenieCzyMoznaRozwiazac(korzen)) {
             long start = System.nanoTime();
             DFS("LURD", korzen, rozwiazanie);
             long koniec = System.nanoTime();
@@ -32,21 +32,30 @@ public class Main {
         return tablica;
     }
 
-    public static boolean sprawdzenieCzyMoznaRozwiazac(int[] wartosci) {
-
-        int temp, licznik = 0;
-        for (int i = 0; i < wartosci.length - 1; i++) {
-            for (int j = 0; j < wartosci.length - 1; j++) {
-                if (wartosci[i] < wartosci[j] && wartosci[i] > 0) {
-                    temp = wartosci[i];
-                    wartosci[i] = wartosci[j];
-                    wartosci[j] = temp;
+    public static boolean sprawdzenieCzyMoznaRozwiazac(Wezel wezel) {
+        int licznik = 0, wynik = 0;
+        if(Uklad.liczbaKolumn%2==0)
+        {
+            licznik = wezel.getUklad().getPunktByWartosc(0).getX();
+            if(Uklad.liczbaWierszy%2!=0)
+                wynik = 1;
+        }
+        int [] wartosci = wartosciUkladu(wezel);
+        System.out.println(Arrays.toString(wartosci));
+//        int temp;
+        for (int i = 0; i < wartosci.length-1; i++) {
+            for (int j = i+1; j < wartosci.length; j++) {
+                if (wartosci[i] > wartosci[j] && wartosci[i] > 0 && wartosci[j] > 0) {
+//                    temp = wartosci[i];
+//                    wartosci[i] = wartosci[j];
+//                    wartosci[j] = temp;
                     licznik++;
                     System.out.println(Arrays.toString(wartosci));
                 }
             }
         }
-        return licznik % 2 == 0;
+        System.out.println("licznik:"+licznik);
+        return licznik % 2 == wynik;
     }
 
     public static List<Punkt> zczytaniePliku(String sciezkaDoPliku) throws FileNotFoundException {
