@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Queue;
 
@@ -49,7 +50,7 @@ public class Wezel {
         this.poziomWDrzewie = poziomWDrzewie;
     }
 
-    public void stworzDzieci(String porzadekPrzechodzenia, char poprzedniRuch, Queue<Wezel> kolejka) {
+    public void stworzDzieci(String porzadekPrzechodzenia, char poprzedniRuch, Collection<Wezel> kolekcja) {
         Punkt punktZero = this.uklad.getPunktByWartosc(0);
         String porzadek = porzadekPrzechodzenia;
         if (punktZero.getX() == 0 || poprzedniRuch == 'R') {
@@ -76,22 +77,22 @@ public class Wezel {
                 dziecko.getUklad().idzWLewo();
                 dziecko.setKierunek('L');
                 porzadek = porzadek.replace("L", "");
-                kolejka.add(dziecko);
+                kolekcja.add(dziecko);
             } else if (porzadek.charAt(0) == 'R') {
                 dziecko.getUklad().idzWPrawo();
                 dziecko.setKierunek('R');
                 porzadek = porzadek.replace("R", "");
-                kolejka.add(dziecko);
+                kolekcja.add(dziecko);
             } else if (porzadek.charAt(0) == 'U') {
                 dziecko.getUklad().idzWGore();
                 dziecko.setKierunek('U');
                 porzadek = porzadek.replace("U", "");
-                kolejka.add(dziecko);
+                kolekcja.add(dziecko);
             } else if (porzadek.charAt(0) == 'D') {
                 dziecko.getUklad().idzWDol();
                 dziecko.setKierunek('D');
                 porzadek = porzadek.replace("D", "");
-                kolejka.add(dziecko);
+                kolekcja.add(dziecko);
             }
         }
     }

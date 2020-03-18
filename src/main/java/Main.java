@@ -2,7 +2,6 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.*;
 
-
 public class Main {
     public static void main(String[] args) throws FileNotFoundException {
 
@@ -10,23 +9,44 @@ public class Main {
         korzen.setPoziomWDrzewie(0);
         korzen.setUklad(new Uklad(zczytaniePliku("uklad_poczatkowy.txt")));
         Uklad rozwiazanie = new Uklad(zczytaniePliku("rozwiazanie.txt"));
-//        korzen.stworzDzieci("LURD");
-        //List<Punkt> tablica = zczytaniePliku("uklad_poczatkowy.txt");
-//        for (List l : tablica) {
-//            for (Object k : l) {
-//                System.out.print(k);
-//            }
-//        }
-        Scanner odczyt = new Scanner(new File("uklad_poczatkowy.txt"));
-        int wiersze, kolumny;
-        wiersze = odczyt.nextInt();
-        kolumny = odczyt.nextInt();
-
-        //List<Punkt> rozwiazanie = zczytaniePliku("rozwiazanie.txt");
-//        Punkt punktZero = getByWartosc(tablica, 0);
-        BFS("LURD", korzen, rozwiazanie);
 
 
+        if (sprawdzenieCzyMoznaRozwiazac(wartosciUkladu(korzen))) {
+            long start = System.nanoTime();
+            DFS("LURD", korzen, rozwiazanie);
+            long koniec = System.nanoTime();
+            long czasWykonywania = (koniec - start) / 1000000;
+            System.out.println("czas wykonywania: "+ czasWykonywania);
+        } else
+            System.out.println("Nie ma rozwiazania");
+
+
+    }
+
+    public static int[] wartosciUkladu(Wezel korzen) {
+        int rozmiarTablicy = korzen.getUklad().getPunkty().size();
+        int[] tablica = new int[rozmiarTablicy];
+        for (int i = 0; i < rozmiarTablicy; i++) {
+            tablica[i] = korzen.getUklad().getPunkty().get(i).getWartosc();
+        }
+        return tablica;
+    }
+
+    public static boolean sprawdzenieCzyMoznaRozwiazac(int[] wartosci) {
+
+        int temp, licznik = 0;
+        for (int i = 0; i < wartosci.length - 1; i++) {
+            for (int j = 0; j < wartosci.length - 1; j++) {
+                if (wartosci[i] < wartosci[j] && wartosci[i] > 0) {
+                    temp = wartosci[i];
+                    wartosci[i] = wartosci[j];
+                    wartosci[j] = temp;
+                    licznik++;
+                    System.out.println(Arrays.toString(wartosci));
+                }
+            }
+        }
+        return licznik % 2 == 0;
     }
 
     public static List<Punkt> zczytaniePliku(String sciezkaDoPliku) throws FileNotFoundException {
@@ -44,39 +64,65 @@ public class Main {
     }
 
     public static void BFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
-        List <Wezel> przetworzone = new ArrayList<Wezel>();
+        List<Wezel> przetworzone = new ArrayList<Wezel>();
         przetworzone.add(korzen);
         Wezel obecnyWezel = new Wezel();
-        if(korzen.getUklad().compareTo(ukladDocelowy)!=0)
-        {
+        if (korzen.getUklad().compareTo(ukladDocelowy) != 0) {
             obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
-            Queue <Wezel> kolejka = new LinkedList<Wezel>();
-            char poprzedniRuch = ' ' ;
-            do{
+            Queue<Wezel> kolejka = new LinkedList<Wezel>();
+            char poprzedniRuch = ' ';
+            do {
                 obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, kolejka);
                 obecnyWezel = kolejka.remove();
                 przetworzone.add(obecnyWezel);
                 poprzedniRuch = obecnyWezel.getKierunek();
-            }while(obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && kolejka.size()!=0);
+            } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && kolejka.size() != 0);
         }
-        System.out.println("glebokosc rekursji "+obecnyWezel.getPoziomWDrzewie());
+        System.out.println("glebokosc rekursji " + obecnyWezel.getPoziomWDrzewie());
 
-        String sciezka ="";
-        while(obecnyWezel != null) {
+        String sciezka = "";
+        while (obecnyWezel != null) {
             sciezka = obecnyWezel.getKierunek() + sciezka;
             obecnyWezel = obecnyWezel.getRodzic();
         }
 
 
-        System.out.println("sciezka: "+sciezka);
-        System.out.println("dlugosc sciezki "+(sciezka.length()-1));
-        System.out.println("Stany przetworzone: "+przetworzone.size());
-        System.out.println("Stany odwiedzone: "+sciezka.length());
+        System.out.println("sciezka: " + sciezka);
+        System.out.println("dlugosc sciezki " + (sciezka.length() - 1));
+        System.out.println("Stany przetworzone: " + przetworzone.size());
+        System.out.println("Stany odwiedzone: " + sciezka.length());
+    }
 
 
+    public static void DFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+        List<Wezel> przetworzone = new ArrayList<Wezel>();
+        przetworzone.add(korzen);
+        Wezel obecnyWezel = new Wezel();
+        if (korzen.getUklad().compareTo(ukladDocelowy) != 0) {
+            obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
+            //Queue<Wezel> kolejka = new LinkedList<Wezel>();
+            Stack<Wezel> stos = new Stack<Wezel>();
+            char poprzedniRuch = ' ';
+            do {
+                obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, stos);
+                obecnyWezel = stos.pop();
+                //obecnyWezel = kolejka.remove();
+                przetworzone.add(obecnyWezel);
+                poprzedniRuch = obecnyWezel.getKierunek();
+            } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && stos.size() != 0 && obecnyWezel.getPoziomWDrzewie() < 20);
+        }
+        System.out.println("glebokosc rekursji " + obecnyWezel.getPoziomWDrzewie());
+
+        String sciezka = "";
+        while (obecnyWezel != null) {
+            sciezka = obecnyWezel.getKierunek() + sciezka;
+            obecnyWezel = obecnyWezel.getRodzic();
+        }
 
 
-        System.out.println(przetworzone.toString());
-        System.out.println("BINGO");
+        System.out.println("sciezka: " + sciezka);
+        System.out.println("dlugosc sciezki " + (sciezka.length() - 1));
+        System.out.println("Stany przetworzone: " + przetworzone.size());
+        System.out.println("Stany odwiedzone: " + sciezka.length());
     }
 }
