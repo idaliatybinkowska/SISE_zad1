@@ -96,11 +96,11 @@ public class Wezel {
         }
     }
 
-    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy) {
+    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy) {
         Wezel najlepszeDziecko = dzieci.get(0);
-        int najmniejszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaHamminga(ukladDocelowy, najlepszeDziecko);
+        int najmniejszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, najlepszeDziecko);
         for (Wezel dziecko : dzieci) {
-            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaHamminga(ukladDocelowy, dziecko);
+            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
             if (obecnaWartosc < najmniejszaWartosc) {
                 najmniejszaWartosc = obecnaWartosc;
                 najlepszeDziecko = dziecko;
@@ -109,11 +109,11 @@ public class Wezel {
         return najlepszeDziecko;
     }
 
-    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy) {
+    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy) {
         Wezel najlepszeDziecko = dzieci.get(0);
-        int najwiekszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, najlepszeDziecko);
+        int najwiekszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaHamming(ukladDocelowy, najlepszeDziecko);
         for (Wezel dziecko : dzieci) {
-            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
+            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaHamming(ukladDocelowy, dziecko);
             if (obecnaWartosc > najwiekszaWartosc) {
                 najwiekszaWartosc = obecnaWartosc;
                 najlepszeDziecko = dziecko;
@@ -122,7 +122,7 @@ public class Wezel {
         return najlepszeDziecko;
     }
 
-    public int heurystykaHamminga(Uklad ukladDocelowy, Wezel dziecko) {
+    public int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
         int suma = 0;
         int rozmiarUkladu = dziecko.getUklad().getPunkty().size();
         List<Punkt> punktyRozwiazanie = ukladDocelowy.getPunkty();
@@ -139,7 +139,7 @@ public class Wezel {
         return suma;
     }
 
-    public int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
+    public int heurystykaHamming(Uklad ukladDocelowy, Wezel dziecko) {
         int licznik = 0;
         int rozmiarUkladu = dziecko.getUklad().getPunkty().size();
         List<Punkt> punktyRozwiazanie = ukladDocelowy.getPunkty();

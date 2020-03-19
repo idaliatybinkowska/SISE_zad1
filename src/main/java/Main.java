@@ -135,7 +135,7 @@ public class Main {
         System.out.println("Stany odwiedzone: " + sciezka.length());
     }
 
-    public static void Hamming(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+    public static void Manhattan(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
         List<Wezel> przetworzone = new ArrayList<Wezel>();
         przetworzone.add(korzen);
         Wezel obecnyWezel = new Wezel();
@@ -148,7 +148,7 @@ public class Main {
                 obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, new ArrayList<Wezel>());
                 //obecnyWezel = stos.pop();
                 //obecnyWezel = kolejka.remove();
-                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy);
+                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy);
                 przetworzone.add(obecnyWezel);
                 poprzedniRuch = obecnyWezel.getKierunek();
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
@@ -168,7 +168,7 @@ public class Main {
         System.out.println("Stany odwiedzone: " + sciezka.length());
     }
 
-    public static void Manhattan(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+    public static void Hamming(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
         List<Wezel> przetworzone = new ArrayList<Wezel>();
         przetworzone.add(korzen);
         Wezel obecnyWezel = new Wezel();
@@ -181,7 +181,7 @@ public class Main {
                 obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, new ArrayList<Wezel>());
                 //obecnyWezel = stos.pop();
                 //obecnyWezel = kolejka.remove();
-                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy);
+                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy);
                 przetworzone.add(obecnyWezel);
                 poprzedniRuch = obecnyWezel.getKierunek();
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
