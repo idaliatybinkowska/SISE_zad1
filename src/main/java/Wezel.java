@@ -2,6 +2,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import static java.lang.System.exit;
+
 public class Wezel {
     private Uklad uklad;
     private List<Wezel> dzieci = new ArrayList<Wezel>();
@@ -96,31 +98,110 @@ public class Wezel {
         }
     }
 
-    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy) {
-        Wezel najlepszeDziecko = dzieci.get(0);
-        int najmniejszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, najlepszeDziecko);
-        for (Wezel dziecko : dzieci) {
+//    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy) {
+//        Wezel najlepszeDziecko = dzieci.get(0);
+//        int najmniejszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, najlepszeDziecko);
+//        for (Wezel dziecko : dzieci) {
+//            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
+//            if (obecnaWartosc < najmniejszaWartosc) {
+//                najmniejszaWartosc = obecnaWartosc;
+//                najlepszeDziecko = dziecko;
+//            }
+//        }
+//        return najlepszeDziecko;
+//    }
+
+
+    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy,List<Wezel> dzieciaki) {
+        Wezel najlepszeDziecko = dzieciaki.get(0);
+        int najwiekszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, najlepszeDziecko);
+        //System.out.println(najlepszeDziecko.poziomWDrzewie);
+        List<Integer> wartosciFunkcji = new ArrayList<Integer>();
+
+        for (Wezel dziecko : dzieciaki) {
+
             int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
-            if (obecnaWartosc < najmniejszaWartosc) {
-                najmniejszaWartosc = obecnaWartosc;
+            wartosciFunkcji.add(obecnaWartosc);
+            if (obecnaWartosc < najwiekszaWartosc) {
+                najwiekszaWartosc = obecnaWartosc;
                 najlepszeDziecko = dziecko;
             }
+
         }
-        return najlepszeDziecko;
+
+//        for (int i = 0; i < wartosciFunkcji.size() ; i++) {
+//            for (int j = i+1; j <wartosciFunkcji.size()-1 ; j++) {
+//                if(wartosciFunkcji.get(i)== wartosciFunkcji.get(j) && ) {
+//                    flag = true;
+//                    break;
+//                }
+//            }
+//        }
+        List<Wezel> najlepszeDzieci = new ArrayList<Wezel>();
+        for (int i = 0; i < wartosciFunkcji.size() ; i++) {
+            if(wartosciFunkcji.get(i) == najwiekszaWartosc) {
+                najlepszeDzieci.add(dzieciaki.get(i));
+            }
+        }
+        if(najlepszeDzieci.size()==1) {
+            return najlepszeDzieci.get(0);
+        } else {
+            List<Wezel> wnuczki = new ArrayList<Wezel>();
+
+            for (int i = 0; i <najlepszeDzieci.size() ; i++) {
+                najlepszeDzieci.get(i).stworzDzieci("LURD", najlepszeDzieci.get(i).getKierunek(), new ArrayList<Wezel>());
+                wnuczki.addAll(najlepszeDzieci.get(i).getDzieci());
+            }
+            return znajdzNajlepszeDzieckoManhattan(ukladDocelowy,wnuczki);
+        }
+
     }
 
-    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy) {
-        Wezel najlepszeDziecko = dzieci.get(0);
+    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy,List<Wezel> dzieciaki) {
+        Wezel najlepszeDziecko = dzieciaki.get(0);
         int najwiekszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaHamming(ukladDocelowy, najlepszeDziecko);
-        for (Wezel dziecko : dzieci) {
+        //System.out.println(najlepszeDziecko.poziomWDrzewie);
+        List<Integer> wartosciFunkcji = new ArrayList<Integer>();
+
+        for (Wezel dziecko : dzieciaki) {
+
             int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaHamming(ukladDocelowy, dziecko);
+            wartosciFunkcji.add(obecnaWartosc);
             if (obecnaWartosc > najwiekszaWartosc) {
                 najwiekszaWartosc = obecnaWartosc;
                 najlepszeDziecko = dziecko;
             }
+
         }
-        return najlepszeDziecko;
+
+//        for (int i = 0; i < wartosciFunkcji.size() ; i++) {
+//            for (int j = i+1; j <wartosciFunkcji.size()-1 ; j++) {
+//                if(wartosciFunkcji.get(i)== wartosciFunkcji.get(j) && ) {
+//                    flag = true;
+//                    break;
+//                }
+//            }
+//        }
+        List<Wezel> najlepszeDzieci = new ArrayList<Wezel>();
+        for (int i = 0; i < wartosciFunkcji.size() ; i++) {
+            if(wartosciFunkcji.get(i) == najwiekszaWartosc) {
+                najlepszeDzieci.add(dzieciaki.get(i));
+            }
+        }
+        if(najlepszeDzieci.size()==1) {
+            return najlepszeDzieci.get(0);
+        } else {
+            List<Wezel> wnuczki = new ArrayList<Wezel>();
+
+            for (int i = 0; i <najlepszeDzieci.size() ; i++) {
+                najlepszeDzieci.get(i).stworzDzieci("LURD", najlepszeDzieci.get(i).getKierunek(), new ArrayList<Wezel>());
+                wnuczki.addAll(najlepszeDzieci.get(i).getDzieci());
+            }
+            return znajdzNajlepszeDzieckoHamming(ukladDocelowy,wnuczki);
+        }
+
     }
+
 
     public int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
         int suma = 0;
@@ -148,12 +229,11 @@ public class Wezel {
             for (int j = 0; j < rozmiarUkladu; j++) {
                 if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc() &&
                         punktyDziecko.get(i).getX() == punktyRozwiazanie.get(j).getX() &&
-                        punktyDziecko.get(i).getY() == punktyRozwiazanie.get(i).getY()) {
+                        punktyDziecko.get(i).getY() == punktyRozwiazanie.get(j).getY()) {
                         licznik++;
                 }
             }
         }
-        System.out.println(licznik);
         return licznik;
     }
 

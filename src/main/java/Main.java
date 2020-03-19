@@ -1,5 +1,6 @@
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.PrintWriter;
 import java.util.*;
 
 public class Main {
@@ -8,20 +9,23 @@ public class Main {
         Wezel korzen = new Wezel();
         korzen.setPoziomWDrzewie(0);
         korzen.setUklad(new Uklad(zczytaniePliku("uklad_poczatkowy.txt")));
-        Uklad rozwiazanie = new Uklad(zczytaniePliku("rozwiazanie.txt"));
+        Uklad rozwiazanie = new Uklad(zczytaniePliku("uklad_docelowy.txt"));
 
 
         if (sprawdzenieCzyMoznaRozwiazac(korzen)) {
             long start = System.nanoTime();
-            Manhattan("LURD", korzen, rozwiazanie);
+            DFS("LURD", korzen, rozwiazanie);
             long koniec = System.nanoTime();
             long czasWykonywania = (koniec - start) / 1000000;
             System.out.println("czas wykonywania: "+ czasWykonywania);
         } else
             System.out.println("Nie ma rozwiazania");
 
-
+        PrintWriter zapis1 = new PrintWriter("rozwiazanie.txt");
+        PrintWriter zapis2 = new PrintWriter("rozwiazanie_dodatkowe_informacje.txt");
     }
+
+
 
     public static int[] wartosciUkladu(Wezel korzen) {
         int rozmiarTablicy = korzen.getUklad().getPunkty().size();
@@ -148,7 +152,7 @@ public class Main {
                 obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, new ArrayList<Wezel>());
                 //obecnyWezel = stos.pop();
                 //obecnyWezel = kolejka.remove();
-                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy);
+                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy,obecnyWezel.getDzieci());
                 przetworzone.add(obecnyWezel);
                 poprzedniRuch = obecnyWezel.getKierunek();
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
@@ -181,7 +185,7 @@ public class Main {
                 obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, new ArrayList<Wezel>());
                 //obecnyWezel = stos.pop();
                 //obecnyWezel = kolejka.remove();
-                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy);
+                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy,obecnyWezel.getDzieci());
                 przetworzone.add(obecnyWezel);
                 poprzedniRuch = obecnyWezel.getKierunek();
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
