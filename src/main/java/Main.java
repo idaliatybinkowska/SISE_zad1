@@ -13,7 +13,7 @@ public class Main {
 
         if (sprawdzenieCzyMoznaRozwiazac(korzen)) {
             long start = System.nanoTime();
-            DFS("LURD", korzen, rozwiazanie);
+            Manhattan("LURD", korzen, rozwiazanie);
             long koniec = System.nanoTime();
             long czasWykonywania = (koniec - start) / 1000000;
             System.out.println("czas wykonywania: "+ czasWykonywania);
@@ -134,4 +134,72 @@ public class Main {
         System.out.println("Stany przetworzone: " + przetworzone.size());
         System.out.println("Stany odwiedzone: " + sciezka.length());
     }
+
+    public static void Hamming(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+        List<Wezel> przetworzone = new ArrayList<Wezel>();
+        przetworzone.add(korzen);
+        Wezel obecnyWezel = new Wezel();
+        if (korzen.getUklad().compareTo(ukladDocelowy) != 0) {
+            obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
+            //Queue<Wezel> kolejka = new LinkedList<Wezel>();
+            //Stack<Wezel> stos = new Stack<Wezel>();
+            char poprzedniRuch = ' ';
+            do {
+                obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, new ArrayList<Wezel>());
+                //obecnyWezel = stos.pop();
+                //obecnyWezel = kolejka.remove();
+                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy);
+                przetworzone.add(obecnyWezel);
+                poprzedniRuch = obecnyWezel.getKierunek();
+            } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
+        }
+        System.out.println("glebokosc rekursji " + obecnyWezel.getPoziomWDrzewie());
+
+        String sciezka = "";
+        while (obecnyWezel != null) {
+            sciezka = obecnyWezel.getKierunek() + sciezka;
+            obecnyWezel = obecnyWezel.getRodzic();
+        }
+
+
+        System.out.println("sciezka: " + sciezka);
+        System.out.println("dlugosc sciezki " + (sciezka.length() - 1));
+        System.out.println("Stany przetworzone: " + przetworzone.size());
+        System.out.println("Stany odwiedzone: " + sciezka.length());
+    }
+
+    public static void Manhattan(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+        List<Wezel> przetworzone = new ArrayList<Wezel>();
+        przetworzone.add(korzen);
+        Wezel obecnyWezel = new Wezel();
+        if (korzen.getUklad().compareTo(ukladDocelowy) != 0) {
+            obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
+            //Queue<Wezel> kolejka = new LinkedList<Wezel>();
+            //Stack<Wezel> stos = new Stack<Wezel>();
+            char poprzedniRuch = ' ';
+            do {
+                obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, new ArrayList<Wezel>());
+                //obecnyWezel = stos.pop();
+                //obecnyWezel = kolejka.remove();
+                obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy);
+                przetworzone.add(obecnyWezel);
+                poprzedniRuch = obecnyWezel.getKierunek();
+            } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
+        }
+        System.out.println("glebokosc rekursji " + obecnyWezel.getPoziomWDrzewie());
+
+        String sciezka = "";
+        while (obecnyWezel != null) {
+            sciezka = obecnyWezel.getKierunek() + sciezka;
+            obecnyWezel = obecnyWezel.getRodzic();
+        }
+
+
+        System.out.println("sciezka: " + sciezka);
+        System.out.println("dlugosc sciezki " + (sciezka.length() - 1));
+        System.out.println("Stany przetworzone: " + przetworzone.size());
+        System.out.println("Stany odwiedzone: " + sciezka.length());
+    }
+
+
 }

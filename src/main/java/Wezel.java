@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.Queue;
 
 public class Wezel {
     private Uklad uklad;
@@ -70,7 +69,7 @@ public class Wezel {
         while (!porzadek.equals("")) {
             Wezel dziecko = new Wezel();
             dziecko.rodzic = this;
-            dziecko.setPoziomWDrzewie(this.poziomWDrzewie+1);
+            dziecko.setPoziomWDrzewie(this.poziomWDrzewie + 1);
             dziecko.setUklad(new Uklad(this.getUklad()));
             this.dzieci.add(dziecko);
             if (porzadek.charAt(0) == 'L') {
@@ -96,6 +95,68 @@ public class Wezel {
             }
         }
     }
+
+    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy) {
+        Wezel najlepszeDziecko = dzieci.get(0);
+        int najmniejszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaHamminga(ukladDocelowy, najlepszeDziecko);
+        for (Wezel dziecko : dzieci) {
+            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaHamminga(ukladDocelowy, dziecko);
+            if (obecnaWartosc < najmniejszaWartosc) {
+                najmniejszaWartosc = obecnaWartosc;
+                najlepszeDziecko = dziecko;
+            }
+        }
+        return najlepszeDziecko;
+    }
+
+    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy) {
+        Wezel najlepszeDziecko = dzieci.get(0);
+        int najwiekszaWartosc = najlepszeDziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, najlepszeDziecko);
+        for (Wezel dziecko : dzieci) {
+            int obecnaWartosc = dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
+            if (obecnaWartosc > najwiekszaWartosc) {
+                najwiekszaWartosc = obecnaWartosc;
+                najlepszeDziecko = dziecko;
+            }
+        }
+        return najlepszeDziecko;
+    }
+
+    public int heurystykaHamminga(Uklad ukladDocelowy, Wezel dziecko) {
+        int suma = 0;
+        int rozmiarUkladu = dziecko.getUklad().getPunkty().size();
+        List<Punkt> punktyRozwiazanie = ukladDocelowy.getPunkty();
+        List<Punkt> punktyDziecko = dziecko.getUklad().getPunkty();
+        for (int i = 0; i < rozmiarUkladu; i++) {
+            for (int j = 0; j < rozmiarUkladu; j++) {
+                if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc()) {
+                    suma += (Math.abs(punktyDziecko.get(i).getX() - punktyRozwiazanie.get(j).getX())) +
+                            (Math.abs(punktyDziecko.get(i).getY() - punktyRozwiazanie.get(j).getY()));
+                    break;
+                }
+            }
+        }
+        return suma;
+    }
+
+    public int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
+        int licznik = 0;
+        int rozmiarUkladu = dziecko.getUklad().getPunkty().size();
+        List<Punkt> punktyRozwiazanie = ukladDocelowy.getPunkty();
+        List<Punkt> punktyDziecko = dziecko.getUklad().getPunkty();
+        for (int i = 0; i < rozmiarUkladu; i++) {
+            for (int j = 0; j < rozmiarUkladu; j++) {
+                if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc() &&
+                        punktyDziecko.get(i).getX() == punktyRozwiazanie.get(j).getX() &&
+                        punktyDziecko.get(i).getY() == punktyRozwiazanie.get(i).getY()) {
+                        licznik++;
+                }
+            }
+        }
+        System.out.println(licznik);
+        return licznik;
+    }
+
 
     @Override
     public String toString() {
