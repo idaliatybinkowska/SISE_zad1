@@ -13,32 +13,40 @@ public class Main {
         }
         else
         {
-            Uklad ukladWzorcowy = znajdzUkladWzorcowy();
-            Wezel korzen = new Wezel(ukladPoczatkowy, 0);
-            List<Wezel> stanyPrzetworzone = new ArrayList<Wezel>();
-            //START ALGORYTMU
-            long start = System.nanoTime();
-            if(args[0].equals("bfs"))
-                stanyPrzetworzone = BFS(args[1], korzen, ukladWzorcowy);                            //BFS
-            else if(args[0].equals("dfs"))
-                stanyPrzetworzone = DFS(args[1], korzen, ukladWzorcowy);                            //DFS
-            else if(args[0].equals("astr") && (args[1].equals("manh") || args[1].equals("hamm")))
-                stanyPrzetworzone = najpierwNajlepszy(args[1], korzen, ukladWzorcowy);              //ASTR
-            else System.out.println("Niepoprawne parametry wywolania");
-            //KONIEC ALGORYTMU
-            long koniec = System.nanoTime();
-            double czasWykonywania = (koniec - start) / 1000000.0;
-            boolean czyRozwiazane = true;
-            //ZAPIS DO PLIKOW
-            if(stanyPrzetworzone.get(stanyPrzetworzone.size()-1).getUklad().compareTo(ukladWzorcowy)!=0)
-                czyRozwiazane=false;
-            OrganizatorPlikow.zapisDoPliku(stworzRozwiazanie(czyRozwiazane, stanyPrzetworzone.get(stanyPrzetworzone.size() - 1)), args[3]);
-            OrganizatorPlikow.zapisDoPliku(
-                    stworzInformacjeDodatkowe(czyRozwiazane,
-                            stanyPrzetworzone.get(stanyPrzetworzone.size() - 1),
-                            stanyPrzetworzone) + String.format("\nczas wykonywania: %.3f",
-                            czasWykonywania),
-                    args[4]);
+            try{
+                Uklad ukladWzorcowy = znajdzUkladWzorcowy();
+                Wezel korzen = new Wezel(ukladPoczatkowy, 0);
+                List<Wezel> stanyPrzetworzone = new ArrayList<Wezel>();
+                //START ALGORYTMU
+                long start = System.nanoTime();
+                if(args[0].equals("bfs"))
+                    stanyPrzetworzone = BFS(args[1], korzen, ukladWzorcowy);                            //BFS
+                else if(args[0].equals("dfs"))
+                    stanyPrzetworzone = DFS(args[1], korzen, ukladWzorcowy);                            //DFS
+                else if(args[0].equals("astr") && (args[1].equals("manh") || args[1].equals("hamm")))
+                    stanyPrzetworzone = najpierwNajlepszy(args[1], korzen, ukladWzorcowy);              //ASTR
+                else System.out.println("Niepoprawne parametry wywolania");
+                //KONIEC ALGORYTMU
+                long koniec = System.nanoTime();
+                double czasWykonywania = (koniec - start) / 1000000.0;
+                boolean czyRozwiazane = true;
+                //ZAPIS DO PLIKOW
+                if(stanyPrzetworzone.get(stanyPrzetworzone.size()-1).getUklad().compareTo(ukladWzorcowy)!=0)
+                    czyRozwiazane=false;
+                OrganizatorPlikow.zapisDoPliku(stworzRozwiazanie(czyRozwiazane, stanyPrzetworzone.get(stanyPrzetworzone.size() - 1)), args[3]);
+                OrganizatorPlikow.zapisDoPliku(
+                        stworzInformacjeDodatkowe(czyRozwiazane,
+                                stanyPrzetworzone.get(stanyPrzetworzone.size() - 1),
+                                stanyPrzetworzone) + String.format("\n%.3f",
+                                czasWykonywania),
+                        args[4]);
+            }
+            catch (Exception e)
+            {
+                e.getStackTrace();
+                OrganizatorPlikow.zapisDoPliku("-1",args[3]);
+                OrganizatorPlikow.zapisDoPliku("-1",args[4]);
+            }
         }
     }
 
@@ -124,7 +132,7 @@ public class Main {
     public static String stworzInformacjeDodatkowe(boolean czyRozwiazane, Wezel wezel,List<Wezel> przetworzone)
     {
         StringBuilder stringBuilder = new StringBuilder();
-        String temp ="\nglebokosc rekursji: "+wezel.getPoziomWDrzewie();
+        String temp ="\n"+wezel.getPoziomWDrzewie();
 
         StringBuilder sciezka = new StringBuilder();
         while (wezel != null) {
@@ -132,12 +140,11 @@ public class Main {
             wezel = wezel.getRodzic();
         }
         if(czyRozwiazane)
-            stringBuilder.append("dlugosc sciezki: ").append(sciezka.length() - 1);
-        else stringBuilder.append("dlugosc sciezki: -1");
-        stringBuilder.append("\nstany odwiedzone: ").append(sciezka.length());
-        stringBuilder.append("\nstany przetworzone: ").append(przetworzone.size());
+            stringBuilder.append(sciezka.length() - 1);
+        else stringBuilder.append("-1");
+        stringBuilder.append("\n").append(sciezka.length());
+        stringBuilder.append("\n").append(przetworzone.size());
         stringBuilder.append(temp);
-        //stringBuilder.append("\nsciezka: ").append(sciezka);
 
         return stringBuilder.toString();
     }
@@ -152,9 +159,9 @@ public class Main {
             wezel = wezel.getRodzic();
         }
         if(czyRozwiazane)
-            stringBuilder.append("dlugosc sciezki: ").append(sciezka.length() - 1);
-        else stringBuilder.append("dlugosc sciezki: -1");
-        stringBuilder.append("\nsciezka: ").append(sciezka);
+            stringBuilder.append(sciezka.length() - 1);
+        else stringBuilder.append("-1");
+        stringBuilder.append("\n").append(sciezka);
 
         return stringBuilder.toString();
     }
