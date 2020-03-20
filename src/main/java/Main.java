@@ -9,20 +9,19 @@ public class Main {
         Wezel korzen = new Wezel();
         korzen.setPoziomWDrzewie(0);
         korzen.setUklad(new Uklad(zczytaniePliku("uklad_poczatkowy.txt")));
-        Uklad rozwiazanie = new Uklad(zczytaniePliku("uklad_docelowy.txt"));
+        Uklad rozwiazanie = new Uklad(zczytaniePliku("rozwiazanie.txt"));
 
 
         if (sprawdzenieCzyMoznaRozwiazac(korzen)) {
             long start = System.nanoTime();
-            DFS("LURD", korzen, rozwiazanie);
+            Manhattan("LURD", korzen, rozwiazanie);
             long koniec = System.nanoTime();
             long czasWykonywania = (koniec - start) / 1000000;
             System.out.println("czas wykonywania: "+ czasWykonywania);
         } else
             System.out.println("Nie ma rozwiazania");
 
-        PrintWriter zapis1 = new PrintWriter("rozwiazanie.txt");
-        PrintWriter zapis2 = new PrintWriter("rozwiazanie_dodatkowe_informacje.txt");
+
     }
 
 
@@ -40,7 +39,9 @@ public class Main {
         int licznik = 0, wynik = 0;
         if(Uklad.liczbaKolumn%2==0)
         {
-            licznik = wezel.getUklad().getPunktByWartosc(0).getX();
+
+            licznik = wezel.getUklad().getPunktByWartosc(0).getY()+1;
+            System.out.println("licznik po if: "+licznik);
             if(Uklad.liczbaWierszy%2!=0)
                 wynik = 1;
         }
@@ -59,6 +60,7 @@ public class Main {
             }
         }
         System.out.println("licznik:"+licznik);
+
         return licznik % 2 == wynik;
     }
 
@@ -117,12 +119,14 @@ public class Main {
             Stack<Wezel> stos = new Stack<Wezel>();
             char poprzedniRuch = ' ';
             do {
-                obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, stos);
+                if(obecnyWezel.getPoziomWDrzewie() < 25) {
+                    obecnyWezel.stworzDzieci(porzadekPrzechodzenia, poprzedniRuch, stos);
+                }
                 obecnyWezel = stos.pop();
                 //obecnyWezel = kolejka.remove();
                 przetworzone.add(obecnyWezel);
                 poprzedniRuch = obecnyWezel.getKierunek();
-            } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && stos.size() != 0 && obecnyWezel.getPoziomWDrzewie() < 20);
+            } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && stos.size() != 0);
         }
         System.out.println("glebokosc rekursji " + obecnyWezel.getPoziomWDrzewie());
 
