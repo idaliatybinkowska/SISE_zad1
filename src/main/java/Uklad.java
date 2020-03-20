@@ -1,10 +1,14 @@
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class Uklad implements Comparable<Uklad> {
     public static int liczbaWierszy;
     public static int liczbaKolumn;
     private List<Punkt> punkty;
+
+    public Uklad() {
+    }
 
     public Uklad(Uklad u) {
         this.punkty = new ArrayList<Punkt>();
@@ -84,5 +88,32 @@ public class Uklad implements Comparable<Uklad> {
         return "Uklad{" +
                 "punkty=" + punkty +
                 '}';
+    }
+
+    private int[] wartosciUkladu() {
+        int[] tablica = new int[punkty.size()];
+        for (int i = 0; i < punkty.size(); i++) {
+            tablica[i] = punkty.get(i).getWartosc();
+        }
+        return tablica;
+    }
+
+    public boolean sprawdzCzyMoznaRozwiazac() {
+        int licznik = 0, wynik = 0;
+        if(Uklad.liczbaKolumn%2==0)
+        {
+            licznik = getPunktByWartosc(0).getY()+1;
+            if(Uklad.liczbaWierszy%2!=0)
+                wynik = 1;
+        }
+        int [] wartosci = wartosciUkladu();
+        for (int i = 0; i < wartosci.length-1; i++) {
+            for (int j = i+1; j < wartosci.length; j++) {
+                if (wartosci[i] > wartosci[j] && wartosci[i] > 0 && wartosci[j] > 0) {
+                    licznik++;
+                }
+            }
+        }
+        return licznik % 2 == wynik;
     }
 }
