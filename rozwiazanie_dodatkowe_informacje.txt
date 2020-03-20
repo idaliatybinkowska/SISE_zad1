@@ -1,5 +1,5 @@
-dlugosc sciezki: 6
-stany odwiedzone: 7
-stany przetworzone: 7
-glebokosc rekursji: 6
-czas wykonywania: 3,687
+dlugosc sciezki: -1
+stany odwiedzone: 2
+stany przetworzone: 893
+glebokosc rekursji: 1
+czas wykonywania: 22,202

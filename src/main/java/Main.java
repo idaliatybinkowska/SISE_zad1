@@ -28,13 +28,17 @@ public class Main {
             //KONIEC ALGORYTMU
             long koniec = System.nanoTime();
             double czasWykonywania = (koniec - start) / 1000000.0;
+            boolean czyRozwiazane = true;
+            //ZAPIS DO PLIKOW
+            if(stanyPrzetworzone.get(stanyPrzetworzone.size()-1).getUklad().compareTo(ukladWzorcowy)!=0)
+                czyRozwiazane=false;
+            OrganizatorPlikow.zapisDoPliku(stworzRozwiazanie(czyRozwiazane, stanyPrzetworzone.get(stanyPrzetworzone.size() - 1)), args[3]);
             OrganizatorPlikow.zapisDoPliku(
-                    stworzInformacjeDodatkowe(
+                    stworzInformacjeDodatkowe(czyRozwiazane,
                             stanyPrzetworzone.get(stanyPrzetworzone.size() - 1),
                             stanyPrzetworzone) + String.format("\nczas wykonywania: %.3f",
                             czasWykonywania),
-                    args[3]);
-            OrganizatorPlikow.zapisDoPliku(stworzRozwiazanie(stanyPrzetworzone.get(stanyPrzetworzone.size() - 1)), args[4]);
+                    args[4]);
         }
     }
 
@@ -77,6 +81,7 @@ public class Main {
         for (int i = porzadekPrzechodzenia.length()-1; i >= 0; i--) {
             temp=temp.concat(String.valueOf(porzadekPrzechodzenia.charAt(i)));
         }
+        porzadekPrzechodzenia = temp;
         List<Wezel> przetworzone = new ArrayList<Wezel>();
         przetworzone.add(korzen);
         Wezel obecnyWezel = new Wezel();
@@ -85,7 +90,7 @@ public class Main {
             //Queue<Wezel> kolejka = new LinkedList<Wezel>();
             Stack<Wezel> stos = new Stack<Wezel>();
             do {
-                if(obecnyWezel.getPoziomWDrzewie() < 25) {
+                if(obecnyWezel.getPoziomWDrzewie() < 10) {
 //                    obecnyWezel.stworzDzieci(porzadekPrzechodzenia, stos);
                     obecnyWezel.stworzDzieci(porzadekPrzechodzenia);
                     stos.addAll(obecnyWezel.getDzieci());
@@ -116,7 +121,7 @@ public class Main {
         return przetworzone;
     }
 
-    public static String stworzInformacjeDodatkowe(Wezel wezel,List<Wezel> przetworzone)
+    public static String stworzInformacjeDodatkowe(boolean czyRozwiazane, Wezel wezel,List<Wezel> przetworzone)
     {
         StringBuilder stringBuilder = new StringBuilder();
         String temp ="\nglebokosc rekursji: "+wezel.getPoziomWDrzewie();
@@ -126,7 +131,9 @@ public class Main {
             sciezka.insert(0, wezel.getKierunek());
             wezel = wezel.getRodzic();
         }
-        stringBuilder.append("dlugosc sciezki: ").append(sciezka.length() - 1);
+        if(czyRozwiazane)
+            stringBuilder.append("dlugosc sciezki: ").append(sciezka.length() - 1);
+        else stringBuilder.append("dlugosc sciezki: -1");
         stringBuilder.append("\nstany odwiedzone: ").append(sciezka.length());
         stringBuilder.append("\nstany przetworzone: ").append(przetworzone.size());
         stringBuilder.append(temp);
@@ -135,7 +142,7 @@ public class Main {
         return stringBuilder.toString();
     }
 
-    public static String stworzRozwiazanie(Wezel wezel)
+    public static String stworzRozwiazanie(boolean czyRozwiazane, Wezel wezel)
     {
         StringBuilder stringBuilder = new StringBuilder();
 
@@ -144,7 +151,9 @@ public class Main {
             sciezka.insert(0, wezel.getKierunek());
             wezel = wezel.getRodzic();
         }
-        stringBuilder.append("dlugosc sciezki: ").append(sciezka.length() - 1);
+        if(czyRozwiazane)
+            stringBuilder.append("dlugosc sciezki: ").append(sciezka.length() - 1);
+        else stringBuilder.append("dlugosc sciezki: -1");
         stringBuilder.append("\nsciezka: ").append(sciezka);
 
         return stringBuilder.toString();
