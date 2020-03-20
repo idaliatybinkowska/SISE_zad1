@@ -6,48 +6,55 @@ public class Main {
 
         Uklad ukladPoczatkowy = new Uklad(OrganizatorPlikow.zczytaniePliku(args[2]));
 
-        if (!ukladPoczatkowy.sprawdzCzyMoznaRozwiazac())
-        {
-            OrganizatorPlikow.zapisDoPliku("-1",args[3]);
-            OrganizatorPlikow.zapisDoPliku("-1",args[4]);
-        }
-        else
-        {
+//        if (!ukladPoczatkowy.sprawdzCzyMoznaRozwiazac())
+//        {
+//            OrganizatorPlikow.zapisDoPliku("-1",args[3]);
+//            OrganizatorPlikow.zapisDoPliku("-1",args[4]);
+//        }
+//        else
+//        {
+            Uklad ukladWzorcowy = znajdzUkladWzorcowy();
+            Wezel korzen = new Wezel(ukladPoczatkowy, 0);
+//                List<Wezel> stanyPrzetworzone = new ArrayList<Wezel>();
+            Wynik wynik = new Wynik();
+            double czasWykonywania=0;
+            boolean czyRozwiazane = true;
+            long start = System.nanoTime(), koniec;
             try{
-                Uklad ukladWzorcowy = znajdzUkladWzorcowy();
-                Wezel korzen = new Wezel(ukladPoczatkowy, 0);
-                List<Wezel> stanyPrzetworzone = new ArrayList<Wezel>();
                 //START ALGORYTMU
-                long start = System.nanoTime();
                 if(args[0].equals("bfs"))
-                    stanyPrzetworzone = BFS(args[1], korzen, ukladWzorcowy);                            //BFS
+                    wynik = BFS(args[1], korzen, ukladWzorcowy);                            //BFS
                 else if(args[0].equals("dfs"))
-                    stanyPrzetworzone = DFS(args[1], korzen, ukladWzorcowy);                            //DFS
+                    wynik = DFS(args[1], korzen, ukladWzorcowy);                            //DFS
                 else if(args[0].equals("astr") && (args[1].equals("manh") || args[1].equals("hamm")))
-                    stanyPrzetworzone = najpierwNajlepszy(args[1], korzen, ukladWzorcowy);              //ASTR
+                    wynik = najpierwNajlepszy(args[1], korzen, ukladWzorcowy);              //ASTR
                 else System.out.println("Niepoprawne parametry wywolania");
                 //KONIEC ALGORYTMU
-                long koniec = System.nanoTime();
-                double czasWykonywania = (koniec - start) / 1000000.0;
-                boolean czyRozwiazane = true;
+                koniec = System.nanoTime();
+                czasWykonywania = (koniec - start) / 1000000.0;
                 //ZAPIS DO PLIKOW
-                if(stanyPrzetworzone.get(stanyPrzetworzone.size()-1).getUklad().compareTo(ukladWzorcowy)!=0)
+                if(wynik.getObecnyWezel().getUklad().compareTo(ukladWzorcowy)!=0)
                     czyRozwiazane=false;
-                OrganizatorPlikow.zapisDoPliku(stworzRozwiazanie(czyRozwiazane, stanyPrzetworzone.get(stanyPrzetworzone.size() - 1)), args[3]);
-                OrganizatorPlikow.zapisDoPliku(
-                        stworzInformacjeDodatkowe(czyRozwiazane,
-                                stanyPrzetworzone.get(stanyPrzetworzone.size() - 1),
-                                stanyPrzetworzone) + String.format("\n%.3f",
-                                czasWykonywania),
-                        args[4]);
             }
             catch (Exception e)
             {
                 e.getStackTrace();
+                czyRozwiazane=false;
+                koniec = System.nanoTime();
+                czasWykonywania = (koniec - start) / 1000000.0;
                 OrganizatorPlikow.zapisDoPliku("-1",args[3]);
                 OrganizatorPlikow.zapisDoPliku("-1",args[4]);
             }
-        }
+            finally {
+                OrganizatorPlikow.zapisDoPliku(stworzRozwiazanie(czyRozwiazane, wynik.getObecnyWezel()), args[3]);
+                OrganizatorPlikow.zapisDoPliku(
+                        stworzInformacjeDodatkowe(czyRozwiazane,
+                                wynik.getObecnyWezel(),
+                                wynik.getPrzetworzone()) + String.format("\n%.3f",
+                                czasWykonywania),
+                        args[4]);
+            }
+//        }
     }
 
     public static Uklad znajdzUkladWzorcowy()
@@ -65,7 +72,8 @@ public class Main {
         return new Uklad(punkty);
     }
 
-    public static List<Wezel> BFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+    public static Wynik BFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+        Wynik wynik = new Wynik();
         List<Wezel> przetworzone = new ArrayList<Wezel>();
         przetworzone.add(korzen);
         Wezel obecnyWezel = new Wezel();
@@ -74,17 +82,20 @@ public class Main {
             Queue<Wezel> kolejka = new LinkedList<Wezel>();
             do {
 //                obecnyWezel.stworzDzieci(porzadekPrzechodzenia, kolejka);
-                obecnyWezel.stworzDzieci(porzadekPrzechodzenia);
+                obecnyWezel.stworzDzieci(porzadekPrzechodzenia,przetworzone);
                 kolejka.addAll(obecnyWezel.getDzieci());
                 obecnyWezel = kolejka.remove();
-                przetworzone.add(obecnyWezel);
+//                przetworzone.add(obecnyWezel);
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && kolejka.size() != 0);
         }
-        return przetworzone;
+        wynik.setObecnyWezel(obecnyWezel);
+        wynik.setPrzetworzone(przetworzone);
+        return wynik;
     }
 
 
-    public static List<Wezel> DFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+    public static Wynik DFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
+        Wynik wynik = new Wynik();
         String temp="";
         for (int i = porzadekPrzechodzenia.length()-1; i >= 0; i--) {
             temp=temp.concat(String.valueOf(porzadekPrzechodzenia.charAt(i)));
@@ -98,51 +109,63 @@ public class Main {
             //Queue<Wezel> kolejka = new LinkedList<Wezel>();
             Stack<Wezel> stos = new Stack<Wezel>();
             do {
-                if(obecnyWezel.getPoziomWDrzewie() < 10) {
+                if(obecnyWezel.getPoziomWDrzewie() < 25) {
 //                    obecnyWezel.stworzDzieci(porzadekPrzechodzenia, stos);
-                    obecnyWezel.stworzDzieci(porzadekPrzechodzenia);
+                    obecnyWezel.stworzDzieci(porzadekPrzechodzenia,przetworzone);
                     stos.addAll(obecnyWezel.getDzieci());
                 }
                 obecnyWezel = stos.pop();
                 //obecnyWezel = kolejka.remove();
-                przetworzone.add(obecnyWezel);
+//                przetworzone.add(obecnyWezel);
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && stos.size() != 0);
         }
-        return przetworzone;
+        wynik.setObecnyWezel(obecnyWezel);
+        wynik.setPrzetworzone(przetworzone);
+        return wynik;
     }
 
-    public static List<Wezel> najpierwNajlepszy(String metryka, Wezel korzen, Uklad ukladDocelowy) {
+    public static Wynik najpierwNajlepszy(String metryka, Wezel korzen, Uklad ukladDocelowy) {
+        Wynik wynik = new Wynik();
         List<Wezel> przetworzone = new ArrayList<Wezel>();
         przetworzone.add(korzen);
         Wezel obecnyWezel = new Wezel();
         if (korzen.getUklad().compareTo(ukladDocelowy) != 0) {
             obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
             do {
-                obecnyWezel.stworzDzieci("LURD");
+                obecnyWezel.stworzDzieci("LURD",przetworzone);
                 if (metryka.equals("manh"))
-                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy,obecnyWezel.getDzieci());
+                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy,obecnyWezel.getDzieci(), przetworzone);
                 else if (metryka.equals("hamm"))
-                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy,obecnyWezel.getDzieci());
-                przetworzone.add(obecnyWezel);
+                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy,obecnyWezel.getDzieci(), przetworzone);
+//                przetworzone.add(obecnyWezel);
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
         }
-        return przetworzone;
+        wynik.setObecnyWezel(obecnyWezel);
+        wynik.setPrzetworzone(przetworzone);
+        return wynik;
     }
 
     public static String stworzInformacjeDodatkowe(boolean czyRozwiazane, Wezel wezel,List<Wezel> przetworzone)
     {
         StringBuilder stringBuilder = new StringBuilder();
-        String temp ="\n"+wezel.getPoziomWDrzewie();
-
-        StringBuilder sciezka = new StringBuilder();
-        while (wezel != null) {
-            sciezka.insert(0, wezel.getKierunek());
-            wezel = wezel.getRodzic();
-        }
+        if (przetworzone==null)
+            System.out.println("cos nie tak");
+        String temp ="\n"+przetworzone.get(przetworzone.size()-1).getPoziomWDrzewie();
         if(czyRozwiazane)
+        {
+            temp ="\n"+wezel.getPoziomWDrzewie();
+            StringBuilder sciezka = new StringBuilder();
+            while (wezel != null) {
+                sciezka.insert(0, wezel.getKierunek());
+                wezel = wezel.getRodzic();
+            }
             stringBuilder.append(sciezka.length() - 1);
-        else stringBuilder.append("-1");
-        stringBuilder.append("\n").append(sciezka.length());
+            stringBuilder.append("\n").append(sciezka.length());
+        } else
+        {
+            stringBuilder.append("-1");
+            stringBuilder.append("\n0");
+        }
         stringBuilder.append("\n").append(przetworzone.size());
         stringBuilder.append(temp);
 
@@ -158,10 +181,14 @@ public class Main {
             sciezka.insert(0, wezel.getKierunek());
             wezel = wezel.getRodzic();
         }
+
         if(czyRozwiazane)
             stringBuilder.append(sciezka.length() - 1);
-        else stringBuilder.append("-1");
-        stringBuilder.append("\n").append(sciezka.substring(1));
+        else
+        {
+            stringBuilder.append("-1");
+            stringBuilder.append("\n").append(sciezka.substring(1));
+        }
 
         return stringBuilder.toString();
     }

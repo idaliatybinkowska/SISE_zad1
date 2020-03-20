@@ -78,7 +78,7 @@ public class Wezel {
         return porzadekPrzechodzenia;
     }
 
-    public void stworzDzieci(String porzadekPrzechodzenia) {
+    public void stworzDzieci(String porzadekPrzechodzenia, List<Wezel> przetworzone) {
         String porzadek = znajdzMozliweRuchy(porzadekPrzechodzenia);
 
         while (!porzadek.equals("")) {
@@ -91,18 +91,23 @@ public class Wezel {
                 dziecko.getUklad().idzWLewo();
                 dziecko.setKierunek('L');
                 porzadek = porzadek.replace("L", "");
+                przetworzone.add(dziecko);
             } else if (porzadek.charAt(0) == 'R') {
                 dziecko.getUklad().idzWPrawo();
                 dziecko.setKierunek('R');
                 porzadek = porzadek.replace("R", "");
+                przetworzone.add(dziecko);
             } else if (porzadek.charAt(0) == 'U') {
                 dziecko.getUklad().idzWGore();
                 dziecko.setKierunek('U');
                 porzadek = porzadek.replace("U", "");
+                przetworzone.add(dziecko);
             } else if (porzadek.charAt(0) == 'D') {
                 dziecko.getUklad().idzWDol();
                 dziecko.setKierunek('D');
                 porzadek = porzadek.replace("D", "");
+                przetworzone.add(dziecko);
+
             }
         }
     }
@@ -132,8 +137,6 @@ public class Wezel {
                 }
             }
             wartosciFunkcji.add(obecnaWartosc);
-
-
         }
         List<Wezel> najlepszeDzieci = new ArrayList<Wezel>();
         for (int i = 0; i < wartosciFunkcji.size() ; i++) {
@@ -144,7 +147,7 @@ public class Wezel {
         return najlepszeDzieci;
     }
 
-    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy,List<Wezel> dzieciaki) {
+    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy,List<Wezel> dzieciaki, List<Wezel> przetworzone) {
         List<Wezel> najlepszeDzieci = znajdzNajlepszeDzieci(ukladDocelowy, dzieciaki,"manh");
         if(najlepszeDzieci.size()==1) {
             return najlepszeDzieci.get(0);
@@ -152,14 +155,14 @@ public class Wezel {
             List<Wezel> wnuczki = new ArrayList<Wezel>();
 
             for (int i = 0; i <najlepszeDzieci.size() ; i++) {
-                najlepszeDzieci.get(i).stworzDzieci("LURD");
+                najlepszeDzieci.get(i).stworzDzieci("LURD",przetworzone);
                 wnuczki.addAll(najlepszeDzieci.get(i).getDzieci());
             }
-            return znajdzNajlepszeDzieckoManhattan(ukladDocelowy,wnuczki);
+            return znajdzNajlepszeDzieckoManhattan(ukladDocelowy,wnuczki,przetworzone);
         }
     }
 
-    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy,List<Wezel> dzieciaki) {
+    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy,List<Wezel> dzieciaki, List<Wezel> przetworzone) {
         List<Wezel> najlepszeDzieci = znajdzNajlepszeDzieci(ukladDocelowy, dzieciaki,"hamm");
         if(najlepszeDzieci.size()==1) {
             return najlepszeDzieci.get(0);
@@ -167,10 +170,10 @@ public class Wezel {
             List<Wezel> wnuczki = new ArrayList<Wezel>();
 
             for (int i = 0; i <najlepszeDzieci.size() ; i++) {
-                najlepszeDzieci.get(i).stworzDzieci("LURD");
+                najlepszeDzieci.get(i).stworzDzieci("LURD",przetworzone);
                 wnuczki.addAll(najlepszeDzieci.get(i).getDzieci());
             }
-            return znajdzNajlepszeDzieckoHamming(ukladDocelowy,wnuczki);
+            return znajdzNajlepszeDzieckoHamming(ukladDocelowy,wnuczki,przetworzone);
         }
     }
 
