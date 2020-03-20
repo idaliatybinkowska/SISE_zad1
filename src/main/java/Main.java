@@ -161,7 +161,7 @@ public class Main {
         if(czyRozwiazane)
             stringBuilder.append(sciezka.length() - 1);
         else stringBuilder.append("-1");
-        stringBuilder.append("\n").append(sciezka);
+        stringBuilder.append("\n").append(sciezka.substring(1));
 
         return stringBuilder.toString();
     }
