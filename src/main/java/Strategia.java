@@ -1,4 +1,5 @@
 import java.util.LinkedList;
+import java.util.PriorityQueue;
 import java.util.Queue;
 import java.util.Stack;
 
@@ -46,12 +47,17 @@ public class Strategia {
         Wezel obecnyWezel = new Wezel();
         if (korzen.getUklad().compareTo(ukladDocelowy) != 0) {
             obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
+            Queue<Wezel> kolejka = new PriorityQueue<Wezel>(new WezelComparator());
             do {
                 obecnyWezel.stworzDzieci("LURD",Wynik.przetworzone);
                 if (metryka.equals("manh"))
-                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy,obecnyWezel.getDzieci(), Wynik.przetworzone);
+                    obecnyWezel.astar(ukladDocelowy, "manh");
+//                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy,obecnyWezel.getDzieci(), Wynik.przetworzone);
                 else if (metryka.equals("hamm"))
-                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy,obecnyWezel.getDzieci(), Wynik.przetworzone);
+                    //obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy,obecnyWezel.getDzieci(), Wynik.przetworzone);
+                    obecnyWezel.astar(ukladDocelowy, "hamm");
+                kolejka.addAll(obecnyWezel.getDzieci());
+                obecnyWezel = kolejka.remove();
                 Wynik.obecnyWezel = obecnyWezel;
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);
         }

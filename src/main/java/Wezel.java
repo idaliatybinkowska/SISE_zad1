@@ -7,6 +7,7 @@ public class Wezel {
     private Wezel rodzic;
     private char kierunek;
     private int poziomWDrzewie;
+    private int wartoscFunkcji;
 
     public Wezel() {
     }
@@ -54,6 +55,14 @@ public class Wezel {
 
     public void setPoziomWDrzewie(int poziomWDrzewie) {
         this.poziomWDrzewie = poziomWDrzewie;
+    }
+
+    public int getWartoscFunkcji() {
+        return wartoscFunkcji;
+    }
+
+    public void setWartoscFunkcji(int wartoscFunkcji) {
+        this.wartoscFunkcji = wartoscFunkcji;
     }
 
     public String znajdzMozliweRuchy(String porzadekPrzechodzenia)
@@ -109,71 +118,14 @@ public class Wezel {
         }
     }
 
-    public List<Wezel> znajdzNajlepszeDzieci(Uklad ukladDocelowy, List<Wezel> dzieciaki, String metryka){
-        int najwiekszaWartosc;
-        if(metryka.equals("hamm"))
-            najwiekszaWartosc = dzieciaki.get(0).poziomWDrzewie + heurystykaHamming(ukladDocelowy, dzieciaki.get(0));
-        else
-            najwiekszaWartosc = dzieciaki.get(0).poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dzieciaki.get(0));
-
-        List<Integer> wartosciFunkcji = new ArrayList<Integer>();
-        int obecnaWartosc;
-        for (Wezel dziecko : dzieciaki) {
+    public void astar(Uklad ukladDocelowy, String metryka){
+        for (Wezel dziecko: dzieci) {
             if(metryka.equals("hamm"))
-            {
-                obecnaWartosc = dziecko.poziomWDrzewie + heurystykaHamming(ukladDocelowy, dziecko);
-                if (obecnaWartosc > najwiekszaWartosc) {
-                    najwiekszaWartosc = obecnaWartosc;
-                }
-            }
+                dziecko.wartoscFunkcji=dziecko.poziomWDrzewie + heurystykaHamming(ukladDocelowy, dziecko);
             else
-            {
-                obecnaWartosc = dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
-                if (obecnaWartosc < najwiekszaWartosc) {
-                    najwiekszaWartosc = obecnaWartosc;
-                }
-            }
-            wartosciFunkcji.add(obecnaWartosc);
-        }
-        List<Wezel> najlepszeDzieci = new ArrayList<Wezel>();
-        for (int i = 0; i < wartosciFunkcji.size() ; i++) {
-            if(wartosciFunkcji.get(i) == najwiekszaWartosc) {
-                najlepszeDzieci.add(dzieciaki.get(i));
-            }
-        }
-        return najlepszeDzieci;
-    }
-
-    public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy,List<Wezel> dzieciaki, List<Wezel> przetworzone) {
-        List<Wezel> najlepszeDzieci = znajdzNajlepszeDzieci(ukladDocelowy, dzieciaki,"manh");
-        if(najlepszeDzieci.size()==1 || najlepszeDzieci.get(0).getUklad().compareTo(ukladDocelowy)==0) {
-            return najlepszeDzieci.get(0);
-        } else {
-            List<Wezel> wnuczki = new ArrayList<Wezel>();
-
-            for (int i = 0; i <najlepszeDzieci.size() ; i++) {
-                najlepszeDzieci.get(i).stworzDzieci("LURD",przetworzone);
-                wnuczki.addAll(najlepszeDzieci.get(i).getDzieci());
-            }
-            return znajdzNajlepszeDzieckoManhattan(ukladDocelowy,wnuczki,przetworzone);
+                dziecko.wartoscFunkcji=dziecko.poziomWDrzewie + heurystykaManhattan(ukladDocelowy, dziecko);
         }
     }
-
-    public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy,List<Wezel> dzieciaki, List<Wezel> przetworzone) {
-        List<Wezel> najlepszeDzieci = znajdzNajlepszeDzieci(ukladDocelowy, dzieciaki,"hamm");
-        if(najlepszeDzieci.size()==1 || najlepszeDzieci.get(0).getUklad().compareTo(ukladDocelowy)==0) {
-            return najlepszeDzieci.get(0);
-        } else {
-            List<Wezel> wnuczki = new ArrayList<Wezel>();
-
-            for (int i = 0; i <najlepszeDzieci.size() ; i++) {
-                najlepszeDzieci.get(i).stworzDzieci("LURD",przetworzone);
-                wnuczki.addAll(najlepszeDzieci.get(i).getDzieci());
-            }
-            return znajdzNajlepszeDzieckoHamming(ukladDocelowy,wnuczki,przetworzone);
-        }
-    }
-
 
     public int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
         int suma = 0;
@@ -199,7 +151,7 @@ public class Wezel {
         List<Punkt> punktyDziecko = dziecko.getUklad().getPunkty();
         for (int i = 0; i < rozmiarUkladu; i++) {
             for (int j = 0; j < rozmiarUkladu; j++) {
-                if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc() &&
+                if (punktyDziecko.get(i).getWartosc() != punktyRozwiazanie.get(j).getWartosc() &&
                         punktyDziecko.get(i).getWartosc()!=0 &&
                         punktyDziecko.get(i).getX() == punktyRozwiazanie.get(j).getX() &&
                         punktyDziecko.get(i).getY() == punktyRozwiazanie.get(j).getY()) {
