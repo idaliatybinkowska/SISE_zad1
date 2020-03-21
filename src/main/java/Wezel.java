@@ -1,8 +1,5 @@
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-
-import static java.lang.System.exit;
 
 public class Wezel {
     private Uklad uklad;
@@ -149,7 +146,7 @@ public class Wezel {
 
     public Wezel znajdzNajlepszeDzieckoManhattan(Uklad ukladDocelowy,List<Wezel> dzieciaki, List<Wezel> przetworzone) {
         List<Wezel> najlepszeDzieci = znajdzNajlepszeDzieci(ukladDocelowy, dzieciaki,"manh");
-        if(najlepszeDzieci.size()==1) {
+        if(najlepszeDzieci.size()==1 || najlepszeDzieci.get(0).getUklad().compareTo(ukladDocelowy)==0) {
             return najlepszeDzieci.get(0);
         } else {
             List<Wezel> wnuczki = new ArrayList<Wezel>();
@@ -164,7 +161,7 @@ public class Wezel {
 
     public Wezel znajdzNajlepszeDzieckoHamming(Uklad ukladDocelowy,List<Wezel> dzieciaki, List<Wezel> przetworzone) {
         List<Wezel> najlepszeDzieci = znajdzNajlepszeDzieci(ukladDocelowy, dzieciaki,"hamm");
-        if(najlepszeDzieci.size()==1) {
+        if(najlepszeDzieci.size()==1 || najlepszeDzieci.get(0).getUklad().compareTo(ukladDocelowy)==0) {
             return najlepszeDzieci.get(0);
         } else {
             List<Wezel> wnuczki = new ArrayList<Wezel>();
@@ -185,7 +182,7 @@ public class Wezel {
         List<Punkt> punktyDziecko = dziecko.getUklad().getPunkty();
         for (int i = 0; i < rozmiarUkladu; i++) {
             for (int j = 0; j < rozmiarUkladu; j++) {
-                if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc()) {
+                if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc() && punktyDziecko.get(i).getWartosc()!=0) {
                     suma += (Math.abs(punktyDziecko.get(i).getX() - punktyRozwiazanie.get(j).getX())) +
                             (Math.abs(punktyDziecko.get(i).getY() - punktyRozwiazanie.get(j).getY()));
                     break;
@@ -203,6 +200,7 @@ public class Wezel {
         for (int i = 0; i < rozmiarUkladu; i++) {
             for (int j = 0; j < rozmiarUkladu; j++) {
                 if (punktyDziecko.get(i).getWartosc() == punktyRozwiazanie.get(j).getWartosc() &&
+                        punktyDziecko.get(i).getWartosc()!=0 &&
                         punktyDziecko.get(i).getX() == punktyRozwiazanie.get(j).getX() &&
                         punktyDziecko.get(i).getY() == punktyRozwiazanie.get(j).getY()) {
                         licznik++;
