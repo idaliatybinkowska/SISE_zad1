@@ -32,7 +32,7 @@ public class Strategia {
             obecnyWezel.setUklad(new Uklad(korzen.getUklad().getPunkty()));
             Stack<Wezel> stos = new Stack<Wezel>();
             do {
-                if(obecnyWezel.getPoziomWDrzewie() < 25) {
+                if(obecnyWezel.getPoziomWDrzewie() < 21) {
                     obecnyWezel.stworzDzieci(porzadekPrzechodzenia,Wynik.przetworzone);
                     stos.addAll(obecnyWezel.getDzieci());
                 }
