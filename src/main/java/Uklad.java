@@ -115,4 +115,19 @@ public class Uklad implements Comparable<Uklad> {
         }
         return licznik % 2 == wynik;
     }
+
+    public static Uklad znajdzUkladWzorcowy()
+    {
+        List<Punkt> punkty = new ArrayList<Punkt>();
+        int wartosc = 1;
+        for (int i = 0; i < Uklad.liczbaWierszy; i++) {
+            for (int j = 0; j < Uklad.liczbaKolumn; j++) {
+                if(wartosc == Uklad.liczbaKolumn*Uklad.liczbaWierszy)
+                    wartosc = 0;
+                punkty.add(new Punkt(wartosc, j , i));
+                wartosc++;
+            }
+        }
+        return new Uklad(punkty);
+    }
 }
