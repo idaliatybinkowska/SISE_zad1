@@ -17,7 +17,7 @@ public class Wynik {
                 wezel = wezel.getRodzic();
             }
             stringBuilder.append(sciezka.length() - 1);
-            stringBuilder.append("\n").append(sciezka.length());
+            stringBuilder.append("\n").append(Strategia.liczbaStanowOdwiedzonych);
         } else
         {
             stringBuilder.append("-1");

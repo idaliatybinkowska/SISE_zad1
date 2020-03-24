@@ -3,7 +3,7 @@ import java.util.List;
 
 public class Wezel {
     private Uklad uklad;
-    private List<Wezel> dzieci = new ArrayList<Wezel>();
+    private List<Wezel> dzieci = new ArrayList<>();
     private Wezel rodzic;
     private char kierunek;
     private int poziomWDrzewie;
@@ -29,16 +29,8 @@ public class Wezel {
         return dzieci;
     }
 
-    public void setDzieci(List<Wezel> dzieci) {
-        this.dzieci = dzieci;
-    }
-
     public Wezel getRodzic() {
         return rodzic;
-    }
-
-    public void setRodzic(Wezel rodzic) {
-        this.rodzic = rodzic;
     }
 
     public char getKierunek() {
@@ -59,10 +51,6 @@ public class Wezel {
 
     public int getWartoscFunkcji() {
         return wartoscFunkcji;
-    }
-
-    public void setWartoscFunkcji(int wartoscFunkcji) {
-        this.wartoscFunkcji = wartoscFunkcji;
     }
 
     public String znajdzMozliweRuchy(String porzadekPrzechodzenia)
@@ -127,7 +115,7 @@ public class Wezel {
         }
     }
 
-    public int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
+    private int heurystykaManhattan(Uklad ukladDocelowy, Wezel dziecko) {
         int suma = 0;
         int rozmiarUkladu = dziecko.getUklad().getPunkty().size();
         List<Punkt> punktyRozwiazanie = ukladDocelowy.getPunkty();
@@ -144,7 +132,7 @@ public class Wezel {
         return suma;
     }
 
-    public int heurystykaHamming(Uklad ukladDocelowy, Wezel dziecko) {
+    private int heurystykaHamming(Uklad ukladDocelowy, Wezel dziecko) {
         int licznik = 0;
         int rozmiarUkladu = dziecko.getUklad().getPunkty().size();
         List<Punkt> punktyRozwiazanie = ukladDocelowy.getPunkty();
@@ -160,15 +148,6 @@ public class Wezel {
             }
         }
         return licznik;
-    }
-
-
-    @Override
-    public String toString() {
-        return "\nWezel{" +
-                "uklad=" + uklad +
-                ", kierunek=" + kierunek +
-                '}';
     }
 }
 

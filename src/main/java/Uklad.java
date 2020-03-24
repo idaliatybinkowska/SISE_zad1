@@ -14,7 +14,6 @@ public class Uklad implements Comparable<Uklad> {
         for (int i = 0; i < u.getPunkty().size() ; i++) {
            this.punkty.add(new Punkt( u.punkty.get(i)));
         }
-
     }
 
     public Uklad(List<Punkt> punkty) {
@@ -23,10 +22,6 @@ public class Uklad implements Comparable<Uklad> {
 
     public List<Punkt> getPunkty() {
         return punkty;
-    }
-
-    public void setPunkty(List<Punkt> punkty) {
-        this.punkty = punkty;
     }
 
     public Punkt getPunktByWartosc(int wartosc) {
@@ -66,7 +61,6 @@ public class Uklad implements Comparable<Uklad> {
         zero.setY(zero.getY() + 1);
     }
 
-
     public int compareTo(Uklad o) {
         for (int i = 0; i < punkty.size(); i++) {
             for (int j = 0; j < o.getPunkty().size(); j++) {
@@ -80,13 +74,6 @@ public class Uklad implements Comparable<Uklad> {
             }
         }
         return 0;
-    }
-
-    @Override
-    public String toString() {
-        return "Uklad{" +
-                "punkty=" + punkty +
-                '}';
     }
 
     private int[] wartosciUkladu() {

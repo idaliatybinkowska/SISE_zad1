@@ -4,6 +4,7 @@ import java.util.Queue;
 import java.util.Stack;
 
 public class Strategia {
+    public static int liczbaStanowOdwiedzonych = 0;
 
     public static void BFS(String porzadekPrzechodzenia, Wezel korzen, Uklad ukladDocelowy) {
         Wynik.przetworzone.add(korzen);
@@ -14,6 +15,7 @@ public class Strategia {
             do {
                 obecnyWezel.stworzDzieci(porzadekPrzechodzenia,Wynik.przetworzone);
                 kolejka.addAll(obecnyWezel.getDzieci());
+                liczbaStanowOdwiedzonych++;
                 obecnyWezel = kolejka.remove();
                 Wynik.obecnyWezel = obecnyWezel;
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && kolejka.size() != 0);
@@ -36,6 +38,7 @@ public class Strategia {
                     obecnyWezel.stworzDzieci(porzadekPrzechodzenia,Wynik.przetworzone);
                     stos.addAll(obecnyWezel.getDzieci());
                 }
+                liczbaStanowOdwiedzonych++;
                 obecnyWezel = stos.pop();
                 Wynik.obecnyWezel = obecnyWezel;
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0 && stos.size() != 0);
@@ -52,11 +55,10 @@ public class Strategia {
                 obecnyWezel.stworzDzieci("LURD",Wynik.przetworzone);
                 if (metryka.equals("manh"))
                     obecnyWezel.astar(ukladDocelowy, "manh");
-//                    obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoManhattan(ukladDocelowy,obecnyWezel.getDzieci(), Wynik.przetworzone);
                 else if (metryka.equals("hamm"))
-                    //obecnyWezel = obecnyWezel.znajdzNajlepszeDzieckoHamming(ukladDocelowy,obecnyWezel.getDzieci(), Wynik.przetworzone);
                     obecnyWezel.astar(ukladDocelowy, "hamm");
                 kolejka.addAll(obecnyWezel.getDzieci());
+                liczbaStanowOdwiedzonych++;
                 obecnyWezel = kolejka.remove();
                 Wynik.obecnyWezel = obecnyWezel;
             } while (obecnyWezel.getUklad().compareTo(ukladDocelowy) != 0);

@@ -8,7 +8,6 @@ import java.util.Scanner;
 
 public class OrganizatorPlikow {
 
-
     public static List<Punkt> zczytaniePliku(String sciezkaDoPliku) throws FileNotFoundException {
         List<Punkt> uklad = new ArrayList<Punkt>();
         Scanner odczyt = new Scanner(new File(sciezkaDoPliku));
@@ -25,7 +24,6 @@ public class OrganizatorPlikow {
 
     public static void zapisDoPliku(String tekst, String sciezkaDoPliku) throws FileNotFoundException {
         FileWriter fileWriter = null;
-
         try {
             fileWriter = new FileWriter(sciezkaDoPliku);
             fileWriter.write(tekst);
